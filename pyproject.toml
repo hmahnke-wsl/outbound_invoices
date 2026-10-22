@@ -1,0 +1,29 @@
+[project]
+name = "outbound-invoices"
+version = "0.1.0"
+description = "Tracks invoices WSL sends to customers: paid / not paid and days open."
+requires-python = ">=3.13"
+dependencies = [
+    # Invoice PDF text
+    "pypdf>=5.0",
+    # JSON API for the dashboard
+    "fastapi>=0.141.1",
+    "uvicorn>=0.53.0",
+    # LDAP login gate for the hosted dashboard
+    "ldap3>=2.9.1",
+    "itsdangerous>=2.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8",
+]
+
+[tool.uv]
+# An application, not a distributable package: run the scripts under code/ with `uv run`.
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["code", "tests"]
+testpaths = ["tests"]

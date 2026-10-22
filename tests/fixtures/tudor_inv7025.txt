@@ -1,0 +1,39 @@
+     WORLD SURF LEAGUE
+4840 Alla Road, Suite 200
+Los Angeles, CA 90066
+Invoice
+INV7025
+EIN: 46-1753105
+1 of 1
+       
+       
+       
+Bill To Invoice Date Terms Due Date
+Montres TUDOR SA_EUR
+rue Francois-Dussaud 3,
+1211 Geneva 26 
+Switzerland
+10/1/2026 11/1/2026
+Description Quantity Price Amount
+2026/2027 Nazare Sponsorship (1 of 2)
+ 
+0.5 €575 000,00 €287 500,00
+  Line Total €287 500,00
+  Total €287 500,00
+  Adjustments €0,00
+  Payments
+  Credits
+  Amount Due €287 500,00 EUR
+     
+PO #    
+   
+Memo    
+2026/2027 Nazare Sponsorship (1 of 2)    
+Remit To 
+Association of Surﬁng Professionals LLC 
+JPMorgan Chase Bank, N.A.
+ABA: 000000000
+Account: 0000000000
+SWIFT: XXXXXXXX
+ 
+   

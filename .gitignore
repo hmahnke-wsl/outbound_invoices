@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+
+# Invoice PDFs (they carry WSL's remit-to bank details) -- never commit
+attachments/
+sample_docs/
+
+# Gmail OAuth, once ingest exists
+credentials/
+token.json
+
+# Local database
+*.db
+*.db.bak*

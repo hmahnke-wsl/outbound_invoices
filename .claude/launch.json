@@ -1,0 +1,58 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "AUTH_DISABLED=true",
+        "uv",
+        "run",
+        "uvicorn",
+        "api:build_app",
+        "--factory",
+        "--app-dir",
+        "code",
+        "--port",
+        "5040"
+      ],
+      "port": 5040
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "web",
+        "run",
+        "dev"
+      ],
+      "port": 3040
+    },
+    {
+      "name": "web-login",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "API_PORT=5041",
+        "npm",
+        "--prefix",
+        "web",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3041"
+      ],
+      "port": 3041
+    },
+    {
+      "name": "api-wsl-ldap",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "SESSION_SECRET=$(openssl rand -hex 32) SESSION_COOKIE_SECURE=false LDAP_URL=ldaps://SMCADC1.corp.worldsurfleague.com LDAP_TLS_VERIFY=false LDAP_USER_TEMPLATE='{username}@worldsurfleague.com' exec uv run uvicorn api:build_app --factory --app-dir code --port 5041"
+      ],
+      "port": 5041
+    }
+  ]
+}
