@@ -41,8 +41,10 @@ INVOICE_NUMBER = re.compile(r"^INV-?\d+$", re.IGNORECASE)
 FILENAME_NUMBER = re.compile(r"\b(INV-?\d+)\.pdf$", re.IGNORECASE)
 HEADER = re.compile(r"^bill to\b.*\binvoice date\b", re.IGNORECASE)
 DATE = re.compile(r"\b\d{1,2}/\d{1,2}/\d{4}\b")
-# NetSuite keeps one customer record per billing currency, e.g. "Montres TUDOR SA_EUR".
-CURRENCY_SUFFIX = re.compile(r"_[A-Z]{3}$")
+# NetSuite keeps one customer record per billing currency or subsidiary, and marks it in the name:
+# "Montres TUDOR SA_EUR", "OMD Digital_AU", "Vissla_210", "Florence Marine X - 210",
+# "Rip Curl International Pty Ltd_210 (EUR)".
+CUSTOMER_SUFFIX = re.compile(r"(?:_(?:[A-Z]{2,3}|\d{3})(?:\s*\([A-Z]{3}\))?|\s+-\s+\d{3})$")
 AMOUNT_DUE = re.compile(r"^amount due\b\s*(.*)$", re.IGNORECASE)
 PO_NUMBER = re.compile(r"^PO\s*#\s*(.*)$", re.IGNORECASE)
 # Everything from here on is WSL's own bank details.
@@ -55,6 +57,14 @@ MONEY = re.compile(r"(?P<symbol>[A-Z]{0,2}\$|[€£¥])?\s*(?P<number>\d[\d.,\s]
 def _normalize(text):
     """Fold ligatures (ﬁ) and non-breaking spaces so label matching is predictable."""
     return unicodedata.normalize("NFKC", text or "")
+
+
+def normalize_customer(name):
+    """The customer's name without NetSuite's currency/subsidiary suffix; None when nothing is left."""
+    name = (name or "").strip()
+    while (trimmed := CUSTOMER_SUFFIX.sub("", name).strip()) != name:
+        name = trimmed
+    return name or None
 
 
 def _lines(text):
@@ -101,8 +111,7 @@ def _bill_to_block(lines):
     block = lines[start + 1:]
     at = next((i for i, line in enumerate(block) if DATE.search(line)), None)
     customer = block[0] if block and at != 0 else None
-    if customer:
-        customer = CURRENCY_SUFFIX.sub("", customer).strip() or None
+    customer = normalize_customer(customer)
     if at is None:
         return customer, None, None, None
     date_line = block[at]

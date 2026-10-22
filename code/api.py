@@ -95,7 +95,7 @@ class Invoice(BaseModel):
 class HistoryEntry(BaseModel):
     status: Status
     changed_at: str
-    source: Literal["import", "manual"]
+    source: Literal["import", "manual", "netsuite"]
 
 
 class AttentionItem(BaseModel):

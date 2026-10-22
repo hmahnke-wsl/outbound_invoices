@@ -4,6 +4,7 @@ import { money, when } from './format';
 import type { HistoryEntry, Invoice } from './types';
 
 const STATUS_LABELS: Record<Invoice['status'], string> = { open: 'Open', paid: 'Paid' };
+const SOURCE_LABELS: Record<HistoryEntry['source'], string> = { import: 'Imported', manual: 'Manual', netsuite: 'NetSuite' };
 
 /** The invoice's details the table leaves out (memo, terms, PO), and its open/paid history. */
 export default function InvoiceDetail({ invoice, onClose }: { invoice: Invoice; onClose: () => void }) {
@@ -54,7 +55,7 @@ export default function InvoiceDetail({ invoice, onClose }: { invoice: Invoice; 
             <li key={i} className="flex gap-3 border-b border-line py-2 text-[15px]">
               <span className="font-semibold">{STATUS_LABELS[entry.status]}</span>
               <span className="text-muted">{when(entry.changed_at)}</span>
-              <span className="text-muted">{entry.source === 'import' ? 'Imported' : 'Manual'}</span>
+              <span className="text-muted">{SOURCE_LABELS[entry.source]}</span>
             </li>
           ))}
         </ul>

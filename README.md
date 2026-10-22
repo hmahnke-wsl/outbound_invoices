@@ -9,6 +9,7 @@ stack and look as `../invoice_tracking` (FastAPI + SQLite, React dashboard on `@
 |---|---|
 | `code/invoice_parser.py` | Reads WSL's NetSuite invoice PDF: customer, invoice #, invoice date, terms, due date, amount + currency, memo, PO # |
 | `code/import_pdfs.py` | Imports every PDF in a folder (default `sample_docs/`, or `INBOX_DIR`). Stand-in for Gmail ingest |
+| `code/import_netsuite.py` | Imports NetSuite's Invoice History and Payment History exports from 1 Jan 2026 (see `HISTORY_BACKFILL.md`) |
 | `code/db.py`, `code/api.py`, `code/summary.py`, `code/auth.py` | SQLite, the JSON API, summary figures, LDAP login |
 | `web/` | React dashboard: Outstanding / Overdue / Paid tabs, summary strip, Needs attention, Mark paid |
 | `tests/` | `pytest`; `tests/fixtures/` holds the sample's text with WSL's bank details redacted |
@@ -29,6 +30,13 @@ stack and look as `../invoice_tracking` (FastAPI + SQLite, React dashboard on `@
 
 Double-click `dashboard.command` (API on 5040, web on 3040; see `ports.env` and `../PORTS.md`).
 
+Double-click `import-netsuite.command` to import the newest NetSuite exports in `sample_docs/` (it backs up
+`invoices.db` first). The same from a terminal:
+
+```bash
+uv run python code/import_netsuite.py
+```
+
 ```bash
 uv run python code/import_pdfs.py
 ```
@@ -46,5 +54,5 @@ First-time setup: `uv sync` here, then `cd web && npm install` (needs `../shared
 ## Not built yet
 
 - Email forwarding / Gmail ingest. The dashboard's Refresh currently re-imports `sample_docs/`.
-- Any automatic "paid" signal (remittance emails, NetSuite export). Paid is manual for now.
+- Refresh doesn't run the NetSuite import yet; run `import-netsuite.command` after dropping new exports in `sample_docs/`.
 - Health thresholds in `code/summary.py` (overdue %, days open 30/60) are placeholders for accounting to set.

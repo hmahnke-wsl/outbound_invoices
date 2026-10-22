@@ -26,7 +26,7 @@ export interface Invoice {
 export interface HistoryEntry {
   status: Invoice['status'];
   changed_at: string;
-  source: 'import' | 'manual';
+  source: 'import' | 'manual' | 'netsuite';
 }
 
 export interface AttentionItem {

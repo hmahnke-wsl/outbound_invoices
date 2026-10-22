@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from invoice_parser import parse_invoice_text, parse_money
+from invoice_parser import normalize_customer, parse_invoice_text, parse_money
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TUDOR = (FIXTURES / "tudor_inv7025.txt").read_text()
@@ -114,3 +114,20 @@ def test_another_companys_invoice_is_flagged():
 ])
 def test_parse_money(text, expected):
     assert parse_money(text) == expected
+
+
+@pytest.mark.parametrize("raw, name", [
+    ("Montres TUDOR SA_EUR", "Montres TUDOR SA"),
+    ("OMD Digital_AU", "OMD Digital"),
+    ("OCEANPTEVENTS, SA_USD", "OCEANPTEVENTS, SA"),
+    ("Vissla_210", "Vissla"),
+    ("Huntington Surf & Sport_315", "Huntington Surf & Sport"),
+    ("Florence Marine X - 210", "Florence Marine X"),
+    ("Rip Curl International Pty Ltd_210 (EUR)", "Rip Curl International Pty Ltd"),
+    ("Rip Curl (Merchandise)_AUD", "Rip Curl (Merchandise)"),
+    ("Upper Deck (DO NOT USE)", "Upper Deck (DO NOT USE)"),
+    ("GLOBO COMUNICAÇÃO E PARTICIPAÇÕES S.A", "GLOBO COMUNICAÇÃO E PARTICIPAÇÕES S.A"),
+    ("  ", None),
+])
+def test_normalizes_netsuite_customer_names(raw, name):
+    assert normalize_customer(raw) == name
