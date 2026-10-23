@@ -118,7 +118,11 @@ cleanup() {
   [[ -n "$FRONTEND_PID" ]] && kill_tree "$FRONTEND_PID"
   rm -f "$backend_log" "$frontend_log"
 }
-trap cleanup EXIT INT TERM
+# INT/TERM exit (the EXIT trap cleans up) instead of returning into the port
+# watch below, which would report "stopped unexpectedly" and wait for a key.
+# server_ops/auto_deploy.sh stops a dashboard this way before restarting it.
+trap cleanup EXIT
+trap "exit 0" INT TERM
 
 print "Starting API on :$BACKEND_PORT ..."
 if [[ "$LOGIN_MODE" == "1" ]]; then
@@ -170,9 +174,13 @@ if ! wait_for_port "$FRONTEND_PORT" 20; then
 fi
 print "Web app ready."
 
-print ""
-print "Opening http://localhost:$FRONTEND_PORT"
-open "http://localhost:$FRONTEND_PORT"
+# DASHBOARD_NO_BROWSER=1: set by server_ops/auto_deploy.sh when it restarts a
+# dashboard on the server, where a new browser tab per deploy is clutter.
+if [[ "${DASHBOARD_NO_BROWSER:-0}" != "1" ]]; then
+  print ""
+  print "Opening http://localhost:$FRONTEND_PORT"
+  open "http://localhost:$FRONTEND_PORT"
+fi
 if [[ "$LOGIN_MODE" == "1" ]]; then
   lan_ip="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)"
   if [[ -n "$lan_ip" ]]; then
